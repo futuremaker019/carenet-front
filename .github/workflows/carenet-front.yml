@@ -31,7 +31,7 @@ jobs:
       # 4. 빌드된 파일을 원격 서버로 전송 (scp 사용)
       - name: Copy files via SCP
         run: |
-          scp -p 122 -r ./dist noah@220.88.103.159:/var/www/carenet/frontend
+          scp -P 122 -r ./dist noah@220.88.103.159:/var/www/carenet/frontend
         env:
           # 원격 서버 SSH 비밀번호나 개인 키
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
