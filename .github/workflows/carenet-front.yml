@@ -26,8 +26,12 @@ jobs:
         run: |
           npm install
           npm run build
-          chmod 777 ./dist
 
+      - name: Fix dist directory permissions after build
+        run: |
+          chmod -R 777 ./dist
+
+      # 6. SSH key 설정 및 파일 전송
       - name: ssh key with passphrase
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -38,35 +42,3 @@ jobs:
           port: ${{ secrets.PORT }}
           source: "./dist"
           target: ${{ secrets.REMOTE_PATH }}
-
-#      - name: Create SSH Key
-#        run: |
-#          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/private-key.pem
-#          chmod 600 ~/private-key.pem
-#      - name: Create SSH directory
-#        run: |
-#          mkdir -p ~/.ssh
-#      - name: Add known host
-#        run: |
-#          ssh-keyscan ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
-#      - name: Copy files to remote server
-#        run: |
-#          cd ${{ github.workspace }}
-#          scp -i ~/private-key.pem -r ./* ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_TARGET }}
-#          echo "Copied files to remote server"
-
-
-#      # 4. 빌드된 파일을 원격 서버로 전송 (scp 사용)
-#      - name: Copy files via SCP
-#        run: |
-#          scp -P 122 -r ./dist noah@220.88.103.159:/var/www/carenet/frontend
-#        env:
-#          # 원격 서버 SSH 비밀번호나 개인 키
-#          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-#
-#      # 5. 원격 서버에서 배포 스크립트 실행 (예: 서비스 재시작)
-#      - name: Restart service via SSH
-#        run: |
-#          ssh -p 122 noah@220.88.103.159 'bash /var/www/carenet/deploy.sh'
-#        env:
-#          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
