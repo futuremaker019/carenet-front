@@ -29,7 +29,7 @@ jobs:
 
       - name: Fix dist directory permissions after build
         run: |
-          chmod -R 777 ./dist
+          chmod -R 777 ./*
 
       # 6. SSH key 설정 및 파일 전송
       - name: ssh key with passphrase
