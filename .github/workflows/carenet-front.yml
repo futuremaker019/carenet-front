@@ -21,6 +21,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+
+      - name: Ensure dist directory permissions
+        run: |
+          mkdir -p ./dist
+          chmod 777 ./dist
+
       # 3. Vite 프로젝트 빌드
       - name: Install dependencies and build
         run: |
@@ -29,7 +35,8 @@ jobs:
 
       - name: Fix dist directory permissions after build
         run: |
-          chmod -R 777 ./*
+          echo pwd
+          chmod -R 777 ./dist
 
       # 6. SSH key 설정 및 파일 전송
       - name: ssh key with passphrase
