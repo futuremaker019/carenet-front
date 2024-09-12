@@ -22,10 +22,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Ensure dist directory permissions
-        run: |
-          mkdir -p ./dist
-          chmod 777 ./dist
+#      - name: Ensure dist directory permissions
+#        run: |
+#          mkdir -p ./dist
+#          chmod 777 ./dist
 
       # 3. Vite 프로젝트 빌드
       - name: Install dependencies and build
@@ -33,10 +33,10 @@ jobs:
           npm install
           npm run build
 
-      - name: Fix dist directory permissions after build
-        run: |
-          echo pwd
-          chmod -R 777 ./dist
+#      - name: Fix dist directory permissions after build
+#        run: |
+#          echo pwd
+#          chmod -R 777 ./dist
 
       # 6. SSH key 설정 및 파일 전송
       - name: ssh key with passphrase
@@ -47,5 +47,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           port: ${{ secrets.PORT }}
-          source: "./dist"
+          source: "./*"
           target: ${{ secrets.REMOTE_PATH }}
