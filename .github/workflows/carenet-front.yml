@@ -47,5 +47,23 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           port: ${{ secrets.PORT }}
-          source: "./*"
+          source: "./dist"
           target: ${{ secrets.REMOTE_PATH }}
+          script: |
+            ls -al
+            chmod -R 777 ./dist
+
+# 참고해서 nginx 재부팅 실행하자
+
+#      - name: WAS 인스턴스 접속 및 애플리케이션 실행
+#        uses: appleboy/ssh-action@v0.1.6
+#        with:
+#          host: ${{ secrets.EC2_SERVER_HOST }}
+#          username: ${{ secrets.SERVER_USERNAME }}
+#          key: ${{ secrets.PRIVATE_KEY }}
+#          script: |
+#            docker stop ${{ secrets.CONTAINER_NAME }}
+#            docker rm ${{ secrets.CONTAINER_NAME }}
+#            docker image rm $(docker images -q)
+#            docker pull ${{ secrets.DOCKER_HUB_REPO }}
+#            docker run -d --name ${{ secrets.CONTAINER_NAME }} -p 8080:8080 ${{ secrets.DOCKER_HUB_REPO }}
