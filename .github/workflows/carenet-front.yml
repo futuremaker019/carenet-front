@@ -27,6 +27,7 @@ jobs:
         run: |
           npm install
           npm run build
+          ls -al
 
       # 4. 원격 서버에서 기존 파일 삭제
       - name: Remove old files from remote server
@@ -51,7 +52,7 @@ jobs:
           port: ${{ secrets.PORT }}
           source: "./dist"
           target: ${{ secrets.REMOTE_PATH }}
-          strip_components: 3
+          strip_components: 2
 
       # 7. 원격 서버에서 권한 설정
       - name: Set permissions on remote server
