@@ -48,7 +48,8 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           port: ${{ secrets.PORT }}
           source: "./dist"
-          target: "/var/www/carenet/frontend"
+          target: ${{ secrets.REMOTE_PATH }}
+          strip_components: 3
 
       # 7. 원격 서버에서 권한 설정
       - name: Set permissions on remote server
@@ -60,7 +61,8 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           port: ${{ secrets.PORT }}
           script: |
-            sudo chmod -R 777 /var/www/carenet/frontend/
+            sudo systemctl restart nginx
+
 # 참고해서 nginx 재부팅 실행하자
 
 #      - name: WAS 인스턴스 접속 및 애플리케이션 실행
