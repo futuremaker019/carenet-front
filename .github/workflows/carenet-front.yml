@@ -22,21 +22,11 @@ jobs:
         with:
           node-version: 18
 
-#      - name: Ensure dist directory permissions
-#        run: |
-#          mkdir -p ./dist
-#          chmod 777 ./dist
-
       # 3. Vite 프로젝트 빌드
       - name: Install dependencies and build
         run: |
           npm install
           npm run build
-
-#      - name: Fix dist directory permissions after build
-#        run: |
-#          echo pwd
-#          chmod -R 777 ./dist
 
       # 6. SSH key 설정 및 파일 전송
       - name: ssh key with passphrase
@@ -62,18 +52,3 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             sudo systemctl restart nginx
-
-# 참고해서 nginx 재부팅 실행하자
-
-#      - name: WAS 인스턴스 접속 및 애플리케이션 실행
-#        uses: appleboy/ssh-action@v0.1.6
-#        with:
-#          host: ${{ secrets.EC2_SERVER_HOST }}
-#          username: ${{ secrets.SERVER_USERNAME }}
-#          key: ${{ secrets.PRIVATE_KEY }}
-#          script: |
-#            docker stop ${{ secrets.CONTAINER_NAME }}
-#            docker rm ${{ secrets.CONTAINER_NAME }}
-#            docker image rm $(docker images -q)
-#            docker pull ${{ secrets.DOCKER_HUB_REPO }}
-#            docker run -d --name ${{ secrets.CONTAINER_NAME }} -p 8080:8080 ${{ secrets.DOCKER_HUB_REPO }}
