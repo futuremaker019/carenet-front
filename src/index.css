@@ -1,4 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .num {
     width: 22px;
     height: 22px;
+}
+
+.exam-layout {
+    position: relative;
+    display: grid;
+    grid-auto-columns: max-content auto;
+    width: 100%;
 }

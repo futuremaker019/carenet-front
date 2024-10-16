@@ -1,12 +1,13 @@
 import './App.css'
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import BaseLayout from "./components/BaseLayout.jsx";
+import BaseLayout from "./pages/layout/BaseLayout.jsx";
 import NotFound from "./pages/error/NotFound.jsx";
 import Main from "./pages/Main.jsx";
-import ExamLayout from "./components/ExamLayout.jsx";
+import ExamLayout from "./pages/layout/ExamLayout.jsx";
+import EditorLayout from "./pages/layout/EditorLayout.jsx";
+import QuestionCreate from "./pages/question/QuestionCreate.jsx";
+import CBT from "./pages/cbt/CBT.jsx";
 import Exams from "./pages/exam/Exams.jsx";
-import EditorLayout from "./components/EditorLayout.jsx";
-import QuestionEditor from "./pages/question/QuestionEditor.jsx";
 
 const router = createBrowserRouter([
     {
@@ -14,7 +15,17 @@ const router = createBrowserRouter([
         element: <BaseLayout/>,
         errorElement: <NotFound/>,
         children: [
-            {index: true, element: <Main/>},
+            {index: true, element: <Main />},
+        ],
+    },
+    {
+        path: "/cbt",
+        element: <ExamLayout/>,
+        errorElement: <NotFound/>,
+        children: [
+            {index: true, element: <CBT />},
+            // { path: "/applies/:id", element: <Apply /> },
+            // { path: "/applies/create", element: <ApplyCreate /> },
         ],
     },
     {
@@ -22,7 +33,7 @@ const router = createBrowserRouter([
         element: <ExamLayout/>,
         errorElement: <NotFound/>,
         children: [
-            {index: true, element: <Exams/>},
+            {index: true, element: <Exams />},
             // { path: "/applies/:id", element: <Apply /> },
             // { path: "/applies/create", element: <ApplyCreate /> },
         ],
@@ -32,7 +43,7 @@ const router = createBrowserRouter([
         element: <EditorLayout/>,
         errorElement: <NotFound/>,
         children: [
-            {index: true, element: <QuestionEditor/>}
+            {index: true, element: <QuestionCreate/>}
         ]
     }
 ]);
