@@ -8,8 +8,8 @@ const ModalLayout = () => {
     const {isOpen, bodyType, size, extraObject, title} = useSelector(state => state.modal)
     const dispatch = useDispatch()
 
-    const close = (e) => {
-        dispatch(closeModal(e))
+    const close = () => {
+        dispatch(closeModal())
     }
 
     return(

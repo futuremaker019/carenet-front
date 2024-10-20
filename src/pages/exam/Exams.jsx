@@ -6,12 +6,16 @@ import {TrashIcon} from "@heroicons/react/24/outline/index.js";
 import {useDispatch} from "react-redux";
 import {openModal} from "../../support/redux/modalSlice.js";
 import {MODAL_TYPES} from "../../support/constants/constans.js";
+import DocumentIcon from "@heroicons/react/24/outline/DocumentIcon";
 
 /**
  * 모의고사 목록페이지
- *  - 모의고사 생성 버튼을 추가해서 모달 or 드로워 나오게 하자
  */
 const Exams = () => {
+
+    const handleCallExams = () => {
+
+    }
 
     const getDummyStatus = (index) => {
         if (index % 5 === 0) return <div className="badge">Not Interested</div>
@@ -21,7 +25,7 @@ const Exams = () => {
         else return <div className="badge badge-ghost">Open</div>
     }
 
-    const deleteCurrentLead = (index) => {
+    const deleteExam = (index) => {
         // dispatch(openModal({title : "Confirmation", bodyType : MODAL_BODY_TYPES.CONFIRMATION,
         //     extraObject : { message : `Are you sure you want to delete this lead?`, type : CONFIRMATION_MODAL_CLOSE_TYPES.LEAD_DELETE, index}}))
     }
@@ -29,7 +33,6 @@ const Exams = () => {
     return (
         <>
             <TitleCard title="목록 페이지" topMargin="mt-2" TopSideButtons={<TopSideButtons/>}>
-                {/* Leads List in table format loaded from slice after api call */}
                 <div className="overflow-x-auto w-full">
                     <table className="table w-full">
                         <thead>
@@ -43,25 +46,36 @@ const Exams = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {
-                            exams.data.map((item, index) => {
-                                return (
-                                    <tr key={index}>
-                                        <td>{exams.data.length - index}</td>
-                                        <td>{item.first_name}</td>
-                                        <td>{moment(new Date()).add(-5 * (index + 2), 'days').format("DD MMM YY")}</td>
-                                        <td>{item.last_name}</td>
-                                        <td>{getDummyStatus(index)}</td>
-                                        <td>
-                                            <button className="btn btn-square btn-ghost"
-                                                    onClick={() => deleteCurrentLead(index)}>
-                                                <TrashIcon className="w-5"/>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        }
+                        {exams.data && exams.data.length > 0 ? (
+                            exams.data.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{exams.data.length - index}</td>
+                                    <td>{item.first_name}</td>
+                                    <td>{moment(new Date()).add(-5 * (index + 2), 'days').format("DD MMM YY")}</td>
+                                    <td>{item.last_name}</td>
+                                    <td>{getDummyStatus(index)}</td>
+                                    <td>
+                                        <button className="btn btn-xs btn-square btn-ghost"
+                                                onClick={() => deleteExam(index)}>
+                                            <TrashIcon className="w-4"/>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="6">
+                                    <div className="hero bg-base-200 flex items-center justify-center h-[60vh]">
+                                        <div className="hero-content text-accent text-center">
+                                            <div className="max-w-md w-[50rem]">
+                                                <DocumentIcon className="h-14 w-14 inline-block"/>
+                                                <h1 className="text-xl mt-2 font-bold">No Data</h1>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        )}
                         </tbody>
                     </table>
                 </div>

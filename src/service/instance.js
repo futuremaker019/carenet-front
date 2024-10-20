@@ -1,20 +1,20 @@
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 
-const BASE_URL = process.env.VITE_SERVER_HOST;
+const BASE_URL = import.meta.env.VITE_SERVER_HOST;
 
 export const api = axios.create({
     baseURL: BASE_URL,
-    withCredentials: true
+    // withCredentials: true
 });
 
-api.interceptors.request.use((config) => {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    }, (error) => Promise.reject(error)
-);
+// api.interceptors.request.use((config) => {
+//         const token = localStorage.getItem('accessToken');
+//         if (token) {
+//             config.headers.Authorization = `Bearer ${token}`;
+//         }
+//         return config;
+//     }, (error) => Promise.reject(error)
+// );
 
 // Add a response interceptor
 api.interceptors.response.use((response) => {
@@ -44,7 +44,7 @@ api.interceptors.response.use((response) => {
                     console.error("refresh Token in cookie was expired. it'll be signed out automatically");
                     localStorage.removeItem("accessToken");
                     localStorage.removeItem("user");
-                    store.dispatch(storeOpenSignInDrawer({openSignInDrawer: true}));
+                    // store.dispatch(storeOpenSignInDrawer({openSignInDrawer: true}));
                 }
             }
             return Promise.reject(error);

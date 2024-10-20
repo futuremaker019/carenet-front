@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from "prop-types";
 
-const TextInput = ({type, placeholder, labelTitle, required, defaultValue}) => {
+const TextInput = ({type, placeholder, labelTitle, required, defaultValue, setState, target}) => {
 
-    const [value, setValue] = React.useState(defaultValue || "");
+    const [value, setValue] = React.useState(defaultValue);
 
-    const updateValue = (e) => {
+    const handleChangeValue = (e) => {
+        setState((prev) => ({ ...prev, [target]: e.target.value }));
         setValue(e.target.value);
     };
 
@@ -14,11 +15,15 @@ const TextInput = ({type, placeholder, labelTitle, required, defaultValue}) => {
             {labelTitle
                 ? (
                     <>
-                        <label className="input input-bordered flex items-center gap-2">
-                            {labelTitle}{required ? <sup className={'text-red-600 text-xl -ml-2'}>*</sup> : <></>}
+                        <label className="form-control w-full">
+                            <div className="label">
+                                <span className="label-text">
+                                    {labelTitle}{required ? <sup className={'text-red-600 text-xl'}>*</sup> : <></>}
+                                </span>
+                            </div>
                             <input type={type} value={value}
-                                   className="grow" placeholder={placeholder}
-                                   onChange={(e) => updateValue(e)}
+                                   className="input input-bordered w-full" placeholder={placeholder}
+                                   onChange={(e) => handleChangeValue(e)}
                             />
                         </label>
                     </>
@@ -43,5 +48,7 @@ TextInput.propTypes = {
     labelTitle: PropTypes.string,
     defaultValue : PropTypes.string,
     required: PropTypes.bool,
+    setState: PropTypes.func,
+    target: PropTypes.string,
 }
 export default TextInput;
