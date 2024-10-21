@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import {closeModal} from "../../support/redux/modalSlice.js";
 import TextInput from "../input/TextInput.jsx";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import ExclamationTriangleIcon from "@heroicons/react/24/outline/ExclamationTriangleIcon";
 import {saveExam} from "../../service/examService.js";
+import {refreshContent} from "../../support/redux/contentSlice.js";
 
 const ExamCreateModal = () => {
     const [exam, setExam] = useState({name: ""});
@@ -11,11 +12,17 @@ const ExamCreateModal = () => {
     const dispatch = useDispatch()
 
     const save = async () => {
+        console.log(exam.name)
         if (!exam.name) setAlert(true);
         const response = await saveExam(exam);
         if (response && response.status === 200) {
-            console.log(response.data);
+            dispatch(refreshContent());
+            dispatch(closeModal());
         }
+    }
+
+    const handleEnterSave = () => {
+        save()
     }
 
     return(
@@ -23,6 +30,7 @@ const ExamCreateModal = () => {
             <TextInput
                 defaultValue={exam.name} required
                 type="text" labelTitle="모의고사 명" setState={setExam} target={'name'}
+                keyDownMethod={save}
             />
             {alert &&
                 <div role="alert" className="alert -py-4">
@@ -31,7 +39,7 @@ const ExamCreateModal = () => {
                 </div>
             }
             <div className="modal-action">
-                <button className="btn btn-primary px-6" onClick={() => save()}>저장</button>
+                <button className="btn btn-primary px-6" onClick={save}>저장</button>
                 <button className="btn btn-ghost" onClick={() => dispatch(closeModal())}>취소</button>
             </div>
         </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from "prop-types";
 
-const TextInput = ({type, placeholder, labelTitle, required, defaultValue, setState, target}) => {
+const TextInput = ({type, placeholder, labelTitle, required, defaultValue, setState, target, keyDownMethod}) => {
 
     const [value, setValue] = React.useState(defaultValue);
 
@@ -9,6 +9,13 @@ const TextInput = ({type, placeholder, labelTitle, required, defaultValue, setSt
         setState((prev) => ({ ...prev, [target]: e.target.value }));
         setValue(e.target.value);
     };
+
+    const handleOnKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            keyDownMethod();
+        }
+    }
 
     return (
         <>
@@ -24,6 +31,7 @@ const TextInput = ({type, placeholder, labelTitle, required, defaultValue, setSt
                             <input type={type} value={value}
                                    className="input input-bordered w-full" placeholder={placeholder}
                                    onChange={(e) => handleChangeValue(e)}
+                                   onKeyDown={(e) => handleOnKeyDown(e)}
                             />
                         </label>
                     </>
@@ -50,5 +58,6 @@ TextInput.propTypes = {
     required: PropTypes.bool,
     setState: PropTypes.func,
     target: PropTypes.string,
+    keyDownMethod: PropTypes.func,
 }
 export default TextInput;
