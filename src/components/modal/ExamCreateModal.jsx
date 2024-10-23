@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import ExclamationTriangleIcon from "@heroicons/react/24/outline/ExclamationTriangleIcon";
 import {saveExam} from "../../service/examService.js";
 import {refreshContent} from "../../support/redux/contentSlice.js";
+import {toast} from "sonner";
 
 const ExamCreateModal = () => {
     const [exam, setExam] = useState({name: ""});
@@ -12,17 +13,16 @@ const ExamCreateModal = () => {
     const dispatch = useDispatch()
 
     const save = async () => {
-        console.log(exam.name)
-        if (!exam.name) setAlert(true);
+        if (!exam.name) {
+            setAlert(true);
+            return;
+        }
         const response = await saveExam(exam);
         if (response && response.status === 200) {
             dispatch(refreshContent());
             dispatch(closeModal());
+            toast.success("모의고사 등록완료");
         }
-    }
-
-    const handleEnterSave = () => {
-        save()
     }
 
     return(
@@ -39,8 +39,8 @@ const ExamCreateModal = () => {
                 </div>
             }
             <div className="modal-action">
-                <button className="btn btn-primary px-6" onClick={save}>저장</button>
-                <button className="btn btn-ghost" onClick={() => dispatch(closeModal())}>취소</button>
+                <button type={'button'} className="btn btn-primary px-6" onClick={save}>저장</button>
+                <button type={'button'} className="btn btn-ghost" onClick={() => dispatch(closeModal())}>취소</button>
             </div>
         </div>
     )

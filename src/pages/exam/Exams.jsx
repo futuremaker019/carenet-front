@@ -1,15 +1,12 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import moment from "moment";
 import TitleCard from "../../components/cards/TitleCard.jsx";
-import {TrashIcon} from "@heroicons/react/24/outline/index.js";
+import {PencilIcon, TrashIcon} from "@heroicons/react/24/outline/index.js";
 import {useDispatch, useSelector} from "react-redux";
 import {openModal} from "../../support/redux/modalSlice.js";
 import {MODAL_TYPES} from "../../support/constants/constans.js";
 import DocumentIcon from "@heroicons/react/24/outline/DocumentIcon";
 import {useInView} from "react-intersection-observer";
 import {getExams, getTotalExamCount} from "../../service/examService.js";
-import styled from "styled-components";
-// import {exams} from "../../dummy/dummy.js";
 
 /**
  * 모의고사 목록페이지
@@ -27,6 +24,7 @@ const Exams = () => {
     const [search, setSearch] = useState({name: ""});
     const [count, setCount] = useState(0);
 
+    const scrollContainerRef = useRef(null); // 스크롤 컨테이너 ref 추가
     const isFirstRender = useRef(true); // 첫 렌더링 여부를 추적
 
     const refresh = useSelector(state => state.content.refresh);
@@ -66,6 +64,11 @@ const Exams = () => {
         const response = await getExams(initPageable, search);
         setPageable(initPageable);
         setExams([...response.content]);
+
+        // 새로운 컨텐츠가 등록되었을 때 스크롤을 최상단으로 이동
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     }
 
     const getDummyStatus = (index) => {
@@ -76,25 +79,28 @@ const Exams = () => {
         else return <div className="badge badge-ghost">Open</div>
     }
 
-    const deleteExam = (index) => {
-        // dispatch(openModal({title : "Confirmation", bodyType : MODAL_BODY_TYPES.CONFIRMATION,
-        //     extraObject : { message : `Are you sure you want to delete this lead?`, type : CONFIRMATION_MODAL_CLOSE_TYPES.LEAD_DELETE, index}}))
+    const deleteExam = (id, index) => {
+
+    }
+
+    const updateExam = (id) => {
+
     }
 
     return (
         <>
             <TitleCard title="목록 페이지" topMargin="mt-2" TopSideButtons={<TopSideButtons/>}>
                 <>
-                    <div className="overflow-x-auto w-full h-[70vh]">
+                    <div className="overflow-x-auto w-full h-[70vh]" ref={scrollContainerRef}>
                         <table className="table w-full">
                             <thead>
                             <tr>
-                                <th>순서</th>
+                                <th className={`w-[100px]`}>순서</th>
                                 <th>제목</th>
-                                <th>등록자</th>
-                                <th>등록일</th>
-                                <th>진해단계</th>
-                                <th>관리</th>
+                                <th className={"w-[150px]"}>상태</th>
+                                <th className={"w-[150px]"}>등록자</th>
+                                <th className={"w-[200px]"}>등록일</th>
+                                <th className={"w-[150px]"}>관리</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -103,14 +109,18 @@ const Exams = () => {
                                     <tr key={index}>
                                         <td>{count && count - index}</td>
                                         <td>{item.name}</td>
-                                        <td>{item.createdAt}</td>
-                                        <td>{item.updatedAt}</td>
                                         <td>
-                                            <div className="badge badge-primary">In Progress</div>
+                                            {getDummyStatus(index)}
                                         </td>
+                                        <td>{item.createUser.username}</td>
+                                        <td>{item.createdAt}</td>
                                         <td>
+                                            <button className="btn btn-xs btn-square btn-ghost ml-2"
+                                                    onClick={() => updateExam(item.id, index)}>
+                                                <PencilIcon className="w-5 h-5"/>
+                                            </button>
                                             <button className="btn btn-xs btn-square btn-ghost"
-                                                    onClick={() => deleteExam(index)}>
+                                                    onClick={() => deleteExam(item.id, index)}>
                                                 <TrashIcon className="w-5 h-5"/>
                                             </button>
                                         </td>

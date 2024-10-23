@@ -3,6 +3,7 @@ import {Outlet} from "react-router-dom";
 import Sidebar from "./sidebar/Sidebar.jsx";
 import Header from "./Header.jsx";
 import ModalLayout from "../../components/modal/ModalLayout.jsx";
+import {Toaster} from "sonner";
 
 const ExamLayout = () => {
     return (
@@ -18,6 +19,7 @@ const ExamLayout = () => {
                 <Sidebar/>
             </div>
             <ModalLayout/>
+            <Toaster position="top-right" richColors closeButton/>
         </>
     );
 };
