@@ -1,19 +1,18 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
+import {useInView} from "react-intersection-observer";
 import TitleCard from "../../components/cards/TitleCard.jsx";
-import {PencilIcon, TrashIcon} from "@heroicons/react/24/outline/index.js";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {openModal} from "../../support/redux/modalSlice.js";
 import {MODAL_TYPES} from "../../support/constants/constans.js";
-import DocumentIcon from "@heroicons/react/24/outline/DocumentIcon";
-import {useInView} from "react-intersection-observer";
-import {getExams, getTotalExamCount} from "../../service/examService.js";
-import {getDummyStatus} from "../../dummy/dummy.jsx";
-import {useNavigate} from "react-router-dom";
+import {PencilIcon, TrashIcon} from "@heroicons/react/24/outline/index.js";
+import DocumentIcon from "@heroicons/react/24/outline/DocumentIcon.js";
+import {exams, getDummyStatus, questions} from "../../dummy/dummy.jsx";
+import {useNavigate, useParams} from "react-router-dom";
 
 /**
- * 모의고사 목록페이지
+    생성된 문제 목록 페이지
  */
-const Exams = () => {
+const Questions = () => {
     const initPageable = {
         size: 15,
         page: 0,
@@ -21,70 +20,20 @@ const Exams = () => {
         last: false
     }
     const [ref, inView] = useInView({threshold: 0.5});
-    const [exams, setExams] = useState([]);
+    // const [questions, setQuestions] = useState([]);
     const [pageable, setPageable] = useState(initPageable);
     const [search, setSearch] = useState({name: ""});
-    const [count, setCount] = useState(0);
+    const [count, setCount] = useState(10);
+
+    const {examId} = useParams();
+    const navigate = useNavigate();
 
     const scrollContainerRef = useRef(null); // 스크롤 컨테이너 ref 추가
     const isFirstRender = useRef(true); // 첫 렌더링 여부를 추적
 
-    const navigate = useNavigate();
-
-    const refresh = useSelector(state => state.content.refresh);
-
-    useEffect(() => {
-        if (!pageable.last && inView) {
-            handleCallExams();
-        }
-    }, [inView]);
-
-
-    useEffect(() => {
-        if (isFirstRender.current) {
-            handleGetTotal();
-            isFirstRender.current = false;
-        } else {
-            handleCallRefresh();
-        }
-    }, [refresh]);
-
-    const handleGetTotal = useCallback(async () => {
-        const response = await getTotalExamCount(search);
-        setCount(parseInt(response));
-    }, [refresh])
-
-    const handleCallExams = async () => {
-        const response = await getExams(pageable, search);
-        setPageable((prev) => ({
-            ...prev,
-            page: response.last ? prev.page : prev.page + 1,
-            last: response.last
-        }));
-        setExams(prev => [...prev, ...response.content]);
-    }
-
-    const handleCallRefresh = async () => {
-        const response = await getExams(initPageable, search);
-        setPageable(initPageable);
-        setExams([...response.content]);
-
-        // 새로운 컨텐츠가 등록되었을 때 스크롤을 최상단으로 이동
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollTo({top: 0, behavior: 'smooth'});
-        }
-    }
-
-    const deleteExam = (id, index) => {
-
-    }
-
-    const updateExam = (id) => {
-
-    }
-
-    const moveTo = (id) => {
-        navigate(`/exams/${id}/questions`);
+    const handleDeleteQuestion = () => {}
+    const handleMoveToView = (questionId) => {
+        navigate(`/exams/${examId}/questions/${questionId}`);
     }
 
     return (
@@ -96,31 +45,29 @@ const Exams = () => {
                         <th className={`w-[100px]`}>순서</th>
                         <th>제목</th>
                         <th className={"w-[150px]"}>상태</th>
+                        <th className={"w-[150px]"}>코드</th>
                         <th className={"w-[150px]"}>등록자</th>
                         <th className={"w-[200px]"}>등록일</th>
                         <th className={"w-[150px]"}>관리</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {exams && exams.length > 0 ? (
-                        exams.map((item, index) => (
+                    {questions && questions.length > 0 ? (
+                        questions.map((item, index) => (
                             <tr key={index}>
                                 <td>{count && count - index}</td>
-                                <td onClick={() => moveTo(item.id)}>
-                                    <div className={`cursor-pointer`}>{item.name}</div>
+                                <td>
+                                    <div className={`cursor-pointer`} onClick={() => handleMoveToView(item.id)}>{item.name}</div>
                                 </td>
                                 <td>
                                     {getDummyStatus(index)}
                                 </td>
-                                <td>{item.createUser.username}</td>
+                                <td>{item.code.name}</td>
+                                <td>{item.createUser.name}</td>
                                 <td>{item.createdAt}</td>
                                 <td>
                                     <button className="btn btn-xs btn-square btn-ghost"
-                                            onClick={() => updateExam(item.id, index)}>
-                                        <PencilIcon className="w-5 h-5"/>
-                                    </button>
-                                    <button className="btn btn-xs btn-square btn-ghost ml-2"
-                                            onClick={() => deleteExam(item.id, index)}>
+                                            onClick={() => handleDeleteQuestion(item.id, index)}>
                                         <TrashIcon className="w-5 h-5"/>
                                     </button>
                                 </td>
@@ -148,14 +95,14 @@ const Exams = () => {
     );
 };
 
-export default Exams;
+export default Questions;
 
 const TopSideButtons = () => {
 
     const dispatch = useDispatch()
 
     const openAddNewLeadModal = () => {
-        dispatch(openModal({title: "모의고사 등록", bodyType: MODAL_TYPES.EXAM_CREATE}))
+        dispatch(openModal({title: "문제 등록", bodyType: MODAL_TYPES.EXAM_CREATE}))
     }
 
     return (

@@ -8,6 +8,7 @@ import EditorLayout from "./pages/layout/EditorLayout.jsx";
 import QuestionCreate from "./pages/question/QuestionCreate.jsx";
 import CBT from "./pages/cbt/CBT.jsx";
 import Exams from "./pages/exam/Exams.jsx";
+import Questions from "./pages/question/Questions.jsx";
 
 const router = createBrowserRouter([
     {
@@ -34,10 +35,21 @@ const router = createBrowserRouter([
         errorElement: <NotFound/>,
         children: [
             {index: true, element: <Exams />},
-            // { path: "/applies/:id", element: <Apply /> },
+            { path: "/exams/:id/questions", element: <Questions /> },
             // { path: "/applies/create", element: <ApplyCreate /> },
         ],
     },
+    // 모든 문제를 모아서 필터링 할때 사용하자
+    // {
+    //     path: "/questions",
+    //     element: <ExamLayout/>,
+    //     errorElement: <NotFound/>,
+    //     children: [
+    //         {index: true, element: <Questions />},
+    //         // { path: "/applies/:id", element: <Apply /> },
+    //         // { path: "/applies/create", element: <ApplyCreate /> },
+    //     ],
+    // },
     {
         path: "/edit",
         element: <EditorLayout/>,

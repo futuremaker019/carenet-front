@@ -3,6 +3,7 @@ import {closeModal} from "../../support/redux/modalSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 import {MODAL_TYPES} from "../../support/constants/constans.js";
 import ExamCreateModal from "./ExamCreateModal.jsx";
+import QuestionCreateModal from "./QuestionCreateModal.jsx";
 
 const ModalLayout = () => {
     const {isOpen, bodyType, size, extraObject, title} = useSelector(state => state.modal)
@@ -27,7 +28,7 @@ const ModalLayout = () => {
                     {
                         {
                             [MODAL_TYPES.EXAM_CREATE] : <ExamCreateModal closeModal={close} extraObject={extraObject}/>,
-                            // [MODAL_BODY_TYPES.CONFIRMATION] : <ConfirmationModalBody extraObject={extraObject} closeModal={close}/>,
+                            [MODAL_TYPES.QUESTION_CREATE] : <QuestionCreateModal extraObject={extraObject} closeModal={close}/>,
                             [MODAL_TYPES.DEFAULT] : <div></div>
                         }[bodyType]
                     }
