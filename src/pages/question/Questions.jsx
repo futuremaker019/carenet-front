@@ -1,43 +1,85 @@
-import React, {useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useInView} from "react-intersection-observer";
 import TitleCard from "../../components/cards/TitleCard.jsx";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {openModal} from "../../support/redux/modalSlice.js";
 import {MODAL_TYPES} from "../../support/constants/constans.js";
-import {PencilIcon, TrashIcon} from "@heroicons/react/24/outline/index.js";
+import {TrashIcon} from "@heroicons/react/24/outline/index.js";
 import DocumentIcon from "@heroicons/react/24/outline/DocumentIcon.js";
-import {exams, getDummyStatus, questions} from "../../dummy/dummy.jsx";
-import {useNavigate, useParams} from "react-router-dom";
+import {getDummyStatus} from "../../dummy/dummy.jsx";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {initSlicePageable} from "../../service/Utils.js";
+import {getQuestionsByExamId, getTotalQuestionsByExamId} from "../../service/questionService.js";
+import PropTypes from "prop-types";
+import TextInput from "../../components/input/TextInput.jsx";
 
 /**
     생성된 문제 목록 페이지
  */
 const Questions = () => {
-    const initPageable = {
-        size: 15,
-        page: 0,
-        sort: 'createdAt,desc',
-        last: false
-    }
     const [ref, inView] = useInView({threshold: 0.5});
-    // const [questions, setQuestions] = useState([]);
-    const [pageable, setPageable] = useState(initPageable);
+    const [questions, setQuestions] = useState([]);
+    const [pageable, setPageable] = useState(initSlicePageable);
     const [search, setSearch] = useState({name: ""});
-    const [count, setCount] = useState(10);
+    const [count, setCount] = useState(0);
 
-    const {examId} = useParams();
+    const location = useLocation();
     const navigate = useNavigate();
+    const {id} = useParams();
 
-    const scrollContainerRef = useRef(null); // 스크롤 컨테이너 ref 추가
-    const isFirstRender = useRef(true); // 첫 렌더링 여부를 추적
+    const scrollContainerRef = useRef(null);    // 스크롤 컨테이너 ref 추가
+    const isFirstRender = useRef(true);      // 첫 렌더링 여부를 추적
+
+    const refresh = useSelector(state => state.content.refresh);
+
+    useEffect(() => {
+        if (!pageable.last && inView) {
+            handleCallData();
+        }
+    }, [inView]);
+
+    useEffect(() => {
+        if (isFirstRender.current) {
+            handleGetTotal();
+            isFirstRender.current = false;
+        } else {
+            handleCallRefresh();
+        }
+    }, [refresh]);
+
+    const handleCallData = async () => {
+        const response = await getQuestionsByExamId(pageable, {examId: id});
+        setPageable((prev) => ({
+            ...prev,
+            page: response.last ? prev.page : prev.page + 1,
+            last: response.last
+        }));
+        setQuestions(prev => [...prev, ...response.content])
+    }
+
+    const handleGetTotal = useCallback(async () => {
+        const totalCount = await getTotalQuestionsByExamId({examId: id});
+        setCount(totalCount);
+    }, [refresh]);
+
+    const handleCallRefresh = async () => {
+        const response = await getQuestionsByExamId(initSlicePageable, {examId: id});
+        setPageable(initSlicePageable);
+        setQuestions([...response.content]);
+
+        // 새로운 컨텐츠가 등록되었을 때 스크롤을 최상단으로 이동
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }
 
     const handleDeleteQuestion = () => {}
     const handleMoveToView = (questionId) => {
-        navigate(`/exams/${examId}/questions/${questionId}`);
+        navigate(`${location.pathname}/${questionId}`);
     }
 
     return (
-        <TitleCard title="목록 페이지" topMargin="mt-2" TopSideButtons={<TopSideButtons/>}>
+        <TitleCard title="목록 페이지" topMargin="mt-2" TopSideButtons={<TopSideButtons examId={id} />}>
             <div className="overflow-x-auto w-full h-[70vh]" ref={scrollContainerRef}>
                 <table className="table w-full">
                     <thead>
@@ -62,8 +104,8 @@ const Questions = () => {
                                 <td>
                                     {getDummyStatus(index)}
                                 </td>
-                                <td>{item.code.name}</td>
-                                <td>{item.createUser.name}</td>
+                                <td>item.code.name</td>
+                                <td>item.createdUser.name</td>
                                 <td>{item.createdAt}</td>
                                 <td>
                                     <button className="btn btn-xs btn-square btn-ghost"
@@ -97,12 +139,14 @@ const Questions = () => {
 
 export default Questions;
 
-const TopSideButtons = () => {
+const TopSideButtons = ({examId}) => {
 
     const dispatch = useDispatch()
 
     const openAddNewLeadModal = () => {
-        dispatch(openModal({title: "문제 등록", bodyType: MODAL_TYPES.EXAM_CREATE}))
+        dispatch(openModal(
+            {title: "문제 등록", bodyType: MODAL_TYPES.QUESTION_CREATE, data: {examId: examId}}
+        ));
     }
 
     return (
@@ -112,4 +156,9 @@ const TopSideButtons = () => {
             </button>
         </div>
     )
+
+}
+
+TopSideButtons.propTypes = {
+    examId: PropTypes.number,
 }

@@ -4,3 +4,10 @@ export const getQueryString = (pageable) => {
         .join('&');
 }
 
+export const initSlicePageable = {
+    size: 15,
+    page: 0,
+    sort: 'createdAt,desc',
+    last: false
+}
+

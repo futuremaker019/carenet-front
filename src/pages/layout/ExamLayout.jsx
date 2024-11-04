@@ -4,6 +4,7 @@ import Sidebar from "./sidebar/Sidebar.jsx";
 import Header from "./Header.jsx";
 import ModalLayout from "../../components/modal/ModalLayout.jsx";
 import {Toaster} from "sonner";
+import Loading from "../../components/Loading.jsx";
 
 const ExamLayout = () => {
     return (
@@ -20,6 +21,7 @@ const ExamLayout = () => {
             </div>
             <ModalLayout/>
             <Toaster position="top-right" richColors closeButton/>
+            <Loading />
         </>
     );
 };

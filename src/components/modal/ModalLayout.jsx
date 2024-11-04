@@ -6,7 +6,7 @@ import ExamCreateModal from "./ExamCreateModal.jsx";
 import QuestionCreateModal from "./QuestionCreateModal.jsx";
 
 const ModalLayout = () => {
-    const {isOpen, bodyType, size, extraObject, title} = useSelector(state => state.modal)
+    const {isOpen, bodyType, size, data, title} = useSelector(state => state.modal)
     const dispatch = useDispatch()
 
     const close = () => {
@@ -27,8 +27,8 @@ const ModalLayout = () => {
                     {/* Loading modal body according to different modal type */}
                     {
                         {
-                            [MODAL_TYPES.EXAM_CREATE] : <ExamCreateModal closeModal={close} extraObject={extraObject}/>,
-                            [MODAL_TYPES.QUESTION_CREATE] : <QuestionCreateModal extraObject={extraObject} closeModal={close}/>,
+                            [MODAL_TYPES.EXAM_CREATE] : <ExamCreateModal data={data} closeModal={close} />,
+                            [MODAL_TYPES.QUESTION_CREATE] : <QuestionCreateModal data={data} closeModal={close}/>,
                             [MODAL_TYPES.DEFAULT] : <div></div>
                         }[bodyType]
                     }

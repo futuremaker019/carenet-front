@@ -1,14 +1,15 @@
 import React, {useState} from 'react';
 import {useDispatch} from "react-redux";
-import {refreshContent} from "../../support/redux/contentSlice.js";
 import {closeModal} from "../../support/redux/modalSlice.js";
-import {toast} from "sonner";
 import {saveQuestion} from "../../service/questionService.js";
 import TextInput from "../input/TextInput.jsx";
 import ExclamationTriangleIcon from "@heroicons/react/24/outline/ExclamationTriangleIcon.js";
+import PropTypes from "prop-types";
 
-const QuestionCreateModal = () => {
-    const [question, setQuestion] = React.useState({name: ""});
+const QuestionCreateModal = ({data}) => {
+    const [question, setQuestion] = React.useState(
+        {name: "", examId: data.examId}
+    );
     const [alert, setAlert] = useState(false);
     const dispatch = useDispatch()
 
@@ -17,12 +18,7 @@ const QuestionCreateModal = () => {
             setAlert(true);
             return;
         }
-        const response = await saveQuestion(question);
-        if (response && response.status === 200) {
-            dispatch(refreshContent());
-            dispatch(closeModal());
-            toast.success("모의고사 등록완료");
-        }
+        await saveQuestion(question);
     }
 
     return (
@@ -49,3 +45,8 @@ const QuestionCreateModal = () => {
 };
 
 export default QuestionCreateModal;
+
+
+QuestionCreateModal.propTypes = {
+    data: PropTypes.object,
+}

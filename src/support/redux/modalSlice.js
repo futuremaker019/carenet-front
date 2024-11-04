@@ -7,22 +7,22 @@ const modalSlice = createSlice({
         isOpen : false,     // modal state management for opening closing
         bodyType : "",      // modal content management
         size : "",          // modal content management
-        extraObject : {},   
+        data : {},
     },
     reducers: {
         openModal: (state, action) => {
-            const {title, bodyType, extraObject, size} = action.payload
+            const {title, bodyType, data, size} = action.payload
             state.isOpen = true
             state.bodyType = bodyType
             state.title = title
             state.size = size || 'md'
-            state.extraObject = extraObject
+            state.data = data
         },
         closeModal: (state, action) => {
             state.isOpen = false
             state.bodyType = ""
             state.title = ""
-            state.extraObject = {}
+            state.data = {}
         },
     }
 })
