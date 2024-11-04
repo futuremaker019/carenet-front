@@ -9,20 +9,15 @@ import {useInView} from "react-intersection-observer";
 import {getExams, getTotalExamCount} from "../../service/examService.js";
 import {getDummyStatus} from "../../dummy/dummy.jsx";
 import {useNavigate} from "react-router-dom";
+import {initSlicePageable} from "../../service/Utils.js";
 
 /**
  * 모의고사 목록페이지
  */
 const Exams = () => {
-    const initPageable = {
-        size: 15,
-        page: 0,
-        sort: 'createdAt,desc',
-        last: false
-    }
     const [ref, inView] = useInView({threshold: 0.5});
     const [exams, setExams] = useState([]);
-    const [pageable, setPageable] = useState(initPageable);
+    const [pageable, setPageable] = useState(initSlicePageable);
     const [search, setSearch] = useState({name: ""});
     const [count, setCount] = useState(0);
 
@@ -50,8 +45,8 @@ const Exams = () => {
     }, [refresh]);
 
     const handleGetTotal = useCallback(async () => {
-        const response = await getTotalExamCount(search);
-        setCount(parseInt(response));
+        const totalCount = await getTotalExamCount(search);
+        setCount(parseInt(totalCount));
     }, [refresh])
 
     const handleCallExams = async () => {
@@ -65,8 +60,8 @@ const Exams = () => {
     }
 
     const handleCallRefresh = async () => {
-        const response = await getExams(initPageable, search);
-        setPageable(initPageable);
+        const response = await getExams(initSlicePageable, search);
+        setPageable(initSlicePageable);
         setExams([...response.content]);
 
         // 새로운 컨텐츠가 등록되었을 때 스크롤을 최상단으로 이동
