@@ -7,6 +7,11 @@ export const MODAL_TYPES = Object.freeze({
     DEFAULT : "",
 });
 
+export const CONTENT_CATEGORY = Object.freeze({
+    QUESTION : "QUESTION"
+})
+
+
 export const RIGHT_DRAWER_TYPES = Object.freeze({
     NOTIFICATION : "NOTIFICATION",
     CALENDAR_EVENTS : "CALENDAR_EVENTS",

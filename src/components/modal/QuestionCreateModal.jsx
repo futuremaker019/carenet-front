@@ -7,9 +7,11 @@ import ExclamationTriangleIcon from "@heroicons/react/24/outline/ExclamationTria
 import PropTypes from "prop-types";
 
 const QuestionCreateModal = ({data}) => {
-    const [question, setQuestion] = React.useState(
-        {name: "", examId: data.examId}
-    );
+    const [question, setQuestion] = React.useState({
+        name: "",
+        examId: data.examId,
+        article: "본문을 작성해주세요."
+    });
     const [alert, setAlert] = useState(false);
     const dispatch = useDispatch()
 

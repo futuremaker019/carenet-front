@@ -5,10 +5,10 @@ import NotFound from "./pages/error/NotFound.jsx";
 import Main from "./pages/Main.jsx";
 import ExamLayout from "./pages/layout/ExamLayout.jsx";
 import EditorLayout from "./pages/layout/EditorLayout.jsx";
-import QuestionCreate from "./pages/question/QuestionCreate.jsx";
+import Question from "./pages/exam/question/Question.jsx";
 import CBT from "./pages/cbt/CBT.jsx";
 import Exams from "./pages/exam/Exams.jsx";
-import Questions from "./pages/question/Questions.jsx";
+import Questions from "./pages/exam/question/Questions.jsx";
 
 const router = createBrowserRouter([
     {
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
         children: [
             {index: true, element: <Exams />},
             { path: "/exams/:id/questions", element: <Questions /> },
-            // { path: "/applies/create", element: <ApplyCreate /> },
+            { path: "/exams/:id/questions/:id", element: <Question /> },
         ],
     },
     // 모든 문제를 모아서 필터링 할때 사용하자
@@ -55,7 +55,7 @@ const router = createBrowserRouter([
         element: <EditorLayout/>,
         errorElement: <NotFound/>,
         children: [
-            {index: true, element: <QuestionCreate/>}
+            {index: true, element: <Question/>}
         ]
     }
 ]);

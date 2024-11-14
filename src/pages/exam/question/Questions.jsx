@@ -1,17 +1,17 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useInView} from "react-intersection-observer";
-import TitleCard from "../../components/cards/TitleCard.jsx";
+import TitleCard from "../../../components/cards/TitleCard.jsx";
 import {useDispatch, useSelector} from "react-redux";
-import {openModal} from "../../support/redux/modalSlice.js";
-import {MODAL_TYPES} from "../../support/constants/constans.js";
+import {openModal} from "../../../support/redux/modalSlice.js";
+import {MODAL_TYPES} from "../../../support/constants/constans.js";
 import {TrashIcon} from "@heroicons/react/24/outline/index.js";
 import DocumentIcon from "@heroicons/react/24/outline/DocumentIcon.js";
-import {getDummyStatus} from "../../dummy/dummy.jsx";
+import {getDummyStatus} from "../../../dummy/dummy.jsx";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
-import {initSlicePageable} from "../../service/Utils.js";
-import {getQuestionsByExamId, getTotalQuestionsByExamId} from "../../service/questionService.js";
+import {initSlicePageable} from "../../../service/Utils.js";
+import {getQuestionsByExamId, getTotalQuestionsByExamId} from "../../../service/questionService.js";
 import PropTypes from "prop-types";
-import TextInput from "../../components/input/TextInput.jsx";
+import TextInput from "../../../components/input/TextInput.jsx";
 
 /**
     생성된 문제 목록 페이지
@@ -49,6 +49,7 @@ const Questions = () => {
 
     const handleCallData = async () => {
         const response = await getQuestionsByExamId(pageable, {examId: id});
+        console.log(response);
         setPageable((prev) => ({
             ...prev,
             page: response.last ? prev.page : prev.page + 1,
@@ -79,7 +80,7 @@ const Questions = () => {
     }
 
     return (
-        <TitleCard title="목록 페이지" topMargin="mt-2" TopSideButtons={<TopSideButtons examId={id} />}>
+        <TitleCard title="목록 페이지" topMargin="mt-2" TopSideButtons={<TopSideButtons examId={parseInt(id)} />}>
             <div className="overflow-x-auto w-full h-[70vh]" ref={scrollContainerRef}>
                 <table className="table w-full">
                     <thead>
